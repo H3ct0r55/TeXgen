@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 pub struct LaTeXTable {
     pub lines: Vec<String>,
     pub begin_table_idx: usize,
@@ -7,7 +5,6 @@ pub struct LaTeXTable {
     pub begin_tabular_idx: usize,
     pub end_tabular_idx: usize,
     pub caption_idx: Option<usize>,
-    pub header_idx: usize,
     pub data_start_idx: usize,
     pub data_end_idx: usize,
 }
@@ -27,13 +24,15 @@ impl LaTeXTable {
 
         let mut col_fmt = String::new();
         for (i, align) in config.alignment.iter().enumerate() {
-            if config.vertical_borders.contains(&i) {
-                col_fmt.push('|');
+            if let Some(vertical_borders) = &config.vertical_borders {
+                let count = vertical_borders.iter().filter(|&&v| v == i).count();
+                col_fmt.push_str(&"|".repeat(count));
             }
             col_fmt.push_str(align);
         }
-        if config.vertical_borders.contains(&config.alignment.len()) {
-            col_fmt.push('|');
+        if let Some(vertical_borders) = &config.vertical_borders {
+            let count = vertical_borders.iter().filter(|&&v| v == config.alignment.len()).count();
+            col_fmt.push_str(&"|".repeat(count));
         }
         if config.alignment.contains(&"X".to_string()) {
             if let Some(width) = &config.width {
@@ -46,8 +45,11 @@ impl LaTeXTable {
         }
         let begin_tabular_idx = lines.len() - 1;
 
-        if config.horizontal_borders.contains(&0) {
-            lines.push("\\hline".to_string());
+        if let Some(horizontal_borders) = &config.horizontal_borders {
+            let count = horizontal_borders.iter().filter(|&&v| v == 0).count();
+            for _ in 0..count {
+                lines.push("\\hline".to_string());
+            }
         }
 
         use std::collections::HashMap;
@@ -55,8 +57,10 @@ impl LaTeXTable {
         let data_start_idx = lines.len();
         for (i, row) in table.rows.iter().enumerate() {
             let mut span_map: HashMap<usize, &crate::config::Span> = HashMap::new();
-            for s in config.multicolumns.iter().filter(|s| s.row == i) {
-                span_map.insert(s.col, s);
+            if let Some(multicolumns) = &config.multicolumns {
+                for s in multicolumns.iter().filter(|s| s.row == i) {
+                    span_map.insert(s.col, s);
+                }
             }
 
             let mut j = 0;
@@ -66,14 +70,20 @@ impl LaTeXTable {
                 if let Some(span) = span_map.get(&j) {
                     let alignment = if let Some(custom) = &span.alignment {
                         let mut custom_align = custom.clone();
-                        if config.vertical_borders.contains(&(j + span.span)) {
-                            custom_align = format!("{}|", custom_align);
+                        if let Some(vertical_borders) = &config.vertical_borders {
+                            let count = vertical_borders.iter().filter(|&&v| v == j + span.span).count();
+                            if count > 0 {
+                                custom_align = format!("{}{}", custom_align, "|".repeat(count));
+                            }
                         }
                         custom_align
                     } else {
                         let mut base = config.alignment[j].clone();
-                        if config.vertical_borders.contains(&(j + span.span)) {
-                            base = format!("{}|", base);
+                        if let Some(vertical_borders) = &config.vertical_borders {
+                            let count = vertical_borders.iter().filter(|&&v| v == j + span.span).count();
+                            if count > 0 {
+                                base = format!("{}{}", base, "|".repeat(count));
+                            }
                         }
                         base
                     };
@@ -91,8 +101,11 @@ impl LaTeXTable {
             }
 
             lines.push(rendered_row + " \\\\");
-            if config.horizontal_borders.contains(&(i + 1)) {
-                lines.push("\\hline".to_string());
+            if let Some(horizontal_borders) = &config.horizontal_borders {
+                let count = horizontal_borders.iter().filter(|&&v| v == i + 1).count();
+                for _ in 0..count {
+                    lines.push("\\hline".to_string());
+                }
             }
         }
         let data_end_idx = lines.len() - 1;
@@ -123,7 +136,6 @@ impl LaTeXTable {
             begin_tabular_idx,
             end_tabular_idx,
             caption_idx,
-            header_idx: 0,
             data_start_idx,
             data_end_idx,
         }

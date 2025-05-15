@@ -16,10 +16,10 @@ pub struct TableConfig {
     pub alignment: Vec<String>,
     pub width: Option<String>,
     pub centering: Option<bool>,
-    pub horizontal_borders: Vec<usize>,
-    pub vertical_borders: Vec<usize>,
-    pub multicolumns: Vec<Span>,
-    pub multirows: Vec<Span>,
+    pub horizontal_borders: Option<Vec<usize>>,
+    pub vertical_borders: Option<Vec<usize>>,
+    pub multicolumns: Option<Vec<Span>>,
+    pub multirows: Option<Vec<Span>>,
     pub caption: Option<String>,
 }
 

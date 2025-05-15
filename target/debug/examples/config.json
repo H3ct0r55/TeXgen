@@ -6,7 +6,7 @@
   "centering": true,
 
   "horizontal_borders": [0, 1, 5],
-  "vertical_borders": [0,1,2,3],
+  "vertical_borders": [0,0,1,1,2,2,3,3],
 
   "multicolumns": [
     { "row": 0, "col": 0, "span": 1, "alignment": "X"}
