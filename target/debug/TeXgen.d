@@ -1,1 +1,0 @@
-/Users/hector/Projects/TeXgen/target/debug/TeXgen: /Users/hector/Projects/TeXgen/src/config/mod.rs /Users/hector/Projects/TeXgen/src/latex/mod.rs /Users/hector/Projects/TeXgen/src/lib.rs /Users/hector/Projects/TeXgen/src/main.rs /Users/hector/Projects/TeXgen/src/table/mod.rs /Users/hector/Projects/TeXgen/src/table/parser.rs
