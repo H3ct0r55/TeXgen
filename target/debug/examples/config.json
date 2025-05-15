@@ -1,0 +1,18 @@
+{
+  "alignment": ["c", "c", "c"],
+
+  "width": "\\textwidth",
+
+  "centering": true,
+
+  "horizontal_borders": [0, 1, 5],
+  "vertical_borders": [0,1,2,3],
+
+  "multicolumns": [
+    { "row": 0, "col": 0, "span": 1, "alignment": "X"}
+  ],
+
+  "multirows": [],
+
+  "caption": "Sample People Table"
+}
